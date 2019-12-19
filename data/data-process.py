@@ -11,3 +11,29 @@ r"""
 # 分离特征数据集、标签数据集为训练集（特征、标签）、验证集（特征、标签）、推理（特征、标签）
 
 # 利用KDTree算法或BallTree算法存储训练-特征集
+
+import numpy as np
+import pandas as pd
+from sklearn.model_selection import train_test_split
+
+path='C:\\Users\\DongPu\\Desktop\\多标记数据集\\emotions\\emotions.arff.csv'
+data=pd.read_csv(path)
+dataset=np.array(data)
+
+features = dataset[:, :72]
+rlabels = dataset[:, 72:]
+
+counts = []
+for i in range(len(rlabels[0])):
+    colunm = rlabels[:, i:i + 1]
+    count = np.sum(colunm == 1)
+    counts.append(count)
+index = np.argsort(counts)
+idex = index[::-1]
+print(idex)
+labels = rlabels[:, idex]
+
+
+X_train, X_test, y_train, y_test = train_test_split(features, labels, test_size=0.3, random_state=42)
+train = np.column_stack((X_train, y_train))
+test = np.column_stack((X_test, y_test))
